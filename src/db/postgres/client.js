@@ -1,6 +1,6 @@
+/* eslint-disable no-undef */
 import pg from 'pg';
 const { Pool } = pg;
-
 
 export const pool = new Pool({
     user: process.env.POSTGRES_USERNAME,
@@ -16,5 +16,5 @@ export const PostgresHelper = {
         const res = await client.query(query, params);
         await client.release();
         return res.rows;
-    }
-}
+    },
+};
