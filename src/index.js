@@ -7,5 +7,6 @@ app.use(express.json());
 
 // eslint-disable-next-line no-undef
 app.listen(process.env.SERVER_PORT, () => {
+    // eslint-disable-next-line no-undef
     console.log(`Listening on port ${process.env.SERVER_PORT}`);
 });
