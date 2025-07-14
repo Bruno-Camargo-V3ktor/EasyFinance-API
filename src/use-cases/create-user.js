@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrpty from 'bcrypt';
 import {
     PostgresCreateUserRepository,
-    EmailAlreadyInUseError,
     PostgresGetUserByEmailRepository,
 } from '../repositories/postgres/index.js';
+import { EmailAlreadyInUseError } from '../errors/index.js';
 
 export class CreateUserUseCase {
     async execute(createUserParams) {
