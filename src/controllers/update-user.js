@@ -1,16 +1,22 @@
 import { EmailAlreadyInUseError } from '../errors/user.js';
 import { UpdateUserUseCase } from '../use-cases/update-user.js';
-import { badRequest, ok, serverError } from './helpers.js';
-import validator from 'validator';
+import {
+    checkIfEmailIsValid,
+    checkIfIdIsValid,
+    checkIfPasswordIsValid,
+    emailAlreadyInUseResponse,
+    invalidEmailResponse,
+    invalidPasswordResponse,
+    invalidUserIdResponse,
+} from './helpers/user.js';
+import { badRequest, ok, serverError } from './helpers/http.js';
 
 export class UpdateUserController {
     async execute(httpRequest) {
         try {
             const userId = httpRequest.params.userId;
-            const isUserIdValid = validator.isUUID(userId);
-
-            if (!isUserIdValid) {
-                return badRequest({ message: 'The provided id is not valid.' });
+            if (!checkIfIdIsValid(userId)) {
+                return invalidUserIdResponse();
             }
 
             const updateUserParams = httpRequest.body;
@@ -36,20 +42,14 @@ export class UpdateUserController {
             }
 
             if (updateUserParams.password) {
-                const passwordIsNotValid = updateUserParams.password.length < 6;
-                if (passwordIsNotValid) {
-                    return badRequest({
-                        message: 'Password must be at least 6 characters',
-                    });
+                if (!checkIfPasswordIsValid(updateUserParams.password)) {
+                    return invalidPasswordResponse();
                 }
             }
 
             if (updateUserParams.email) {
-                const emailIsValid = validator.isEmail(updateUserParams.email);
-                if (!emailIsValid) {
-                    return badRequest({
-                        message: 'Invalid e-mail. Please provide a valid one.',
-                    });
+                if (!checkIfEmailIsValid(updateUserParams.email)) {
+                    return invalidEmailResponse();
                 }
             }
 
@@ -62,7 +62,7 @@ export class UpdateUserController {
             return ok(updateUser);
         } catch (error) {
             if (error instanceof EmailAlreadyInUseError) {
-                return badRequest({ message: error.message });
+                return emailAlreadyInUseResponse(error.message);
             }
 
             console.error(error);
