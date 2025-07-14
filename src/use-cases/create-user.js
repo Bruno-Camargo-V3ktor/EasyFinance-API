@@ -4,6 +4,15 @@ import { PostgresCreateUserRepository } from '../repositories/postgres/create-us
 
 export class CreateUserUseCase {
     async execute(createUserParams) {
+        const getUserByEmailRepository = new PostgresCreateUserRepository();
+        const userWithEmail = await getUserByEmailRepository.execute(
+            createUserParams.email,
+        );
+
+        if (userWithEmail) {
+            throw new Error('The provided e-mail is already in use.');
+        }
+
         const id = uuidv4();
         const password = await bcrpty.hash(createUserParams.password, 10);
 
