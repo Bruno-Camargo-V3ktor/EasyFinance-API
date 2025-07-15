@@ -6,6 +6,8 @@ import {
     GetUserByIdController,
     UpdateUserController,
 } from './controllers/index.js';
+import { PostgresGetUserByIdRepository } from './repositories/postgres/index.js';
+import { GetUserByIdUseCase } from './use-cases/index.js';
 
 const app = express();
 app.use(express.json());
@@ -18,9 +20,13 @@ app.post('/api/users', async (request, response) => {
 });
 
 app.get('/api/users/:userId', async (request, response) => {
-    const getUserByIdController = new GetUserByIdController();
-    const { statusCode, body } = await getUserByIdController.execute(request);
+    const getUserByIdRepository = new PostgresGetUserByIdRepository();
 
+    const getUserByIdUseCase = new GetUserByIdUseCase(getUserByIdRepository);
+
+    const getUserByIdController = new GetUserByIdController(getUserByIdUseCase);
+
+    const { statusCode, body } = await getUserByIdController.execute(request);
     response.status(statusCode).json(body).send();
 });
 
