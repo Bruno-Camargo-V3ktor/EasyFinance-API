@@ -7,8 +7,8 @@ import {
 } from './helpers/index.js';
 
 export class GetUserByIdController {
-    constructor(getUserByIdUseCase) {
-        this.getUserByIdUseCase = getUserByIdUseCase;
+    constructor(getUserByIdUseCaseRepository) {
+        this.getUserByIdUseCaseRepository = getUserByIdUseCaseRepository;
     }
 
     async execute(httpRequest) {
@@ -18,7 +18,8 @@ export class GetUserByIdController {
                 return invalidUserIdResponse();
             }
 
-            const user = await this.getUserByIdUseCase.execute(userId);
+            const user =
+                await this.getUserByIdUseCaseRepository.execute(userId);
 
             if (!user) {
                 return userNotFound();
