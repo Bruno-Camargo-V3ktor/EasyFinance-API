@@ -1,0 +1,62 @@
+import {
+    PostgresCreateUserRepository,
+    PostgresDeleteUserRepository,
+    PostgresGetUserByEmailRepository,
+    PostgresGetUserByIdRepository,
+    PostgresUpdateUserRepository,
+} from '../../repositories/postgres/index.js';
+import {
+    CreateUserUseCase,
+    DeleteUserUseCase,
+    GetUserByIdUseCase,
+    UpdateUserUseCase,
+} from '../../use-cases/index.js';
+import {
+    CreateUserController,
+    DeleteUserController,
+    GetUserByIdController,
+    UpdateUserController,
+} from '../../controllers/index.js';
+
+export const makeGetUserByIdController = () => {
+    const getUserByIdRepository = new PostgresGetUserByIdRepository();
+    const getUserByIdUseCase = new GetUserByIdUseCase(getUserByIdRepository);
+    const getUserByIdController = new GetUserByIdController(getUserByIdUseCase);
+
+    return getUserByIdController;
+};
+
+export const makeCreateUserController = () => {
+    const createUserRepository = new PostgresCreateUserRepository();
+    const getUserByEmailRepository = new PostgresGetUserByEmailRepository();
+
+    const createUserUseCase = new CreateUserUseCase(
+        createUserRepository,
+        getUserByEmailRepository,
+    );
+
+    const createUserController = new CreateUserController(createUserUseCase);
+    return createUserController;
+};
+
+export const makeUpdateUserController = () => {
+    const updateUserRepository = new PostgresUpdateUserRepository();
+
+    const updateUserUseCase = new UpdateUserUseCase(updateUserRepository);
+
+    const updateUserController = new UpdateUserController(updateUserUseCase);
+    return updateUserController;
+};
+
+export const makeDeleteUserController = () => {
+    const deleteUserRepository = new PostgresDeleteUserRepository();
+    const getUserByEmailRepository = new PostgresGetUserByEmailRepository();
+
+    const deleteUserUseCase = new DeleteUserUseCase(
+        deleteUserRepository,
+        getUserByEmailRepository,
+    );
+
+    const deleteUserController = new DeleteUserController(deleteUserUseCase);
+    return deleteUserController;
+};
