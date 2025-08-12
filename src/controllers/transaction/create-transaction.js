@@ -1,8 +1,10 @@
 import {
-    badRequest,
     checkIfIdIsValid,
+    checkTypeIsValid,
     created,
+    invalidAmountResponse,
     invalidIdResponse,
+    invalidTypeResponse,
     requiredFieldIsMissingResponse,
     serverError,
     validateRequiredFields,
@@ -41,20 +43,13 @@ export class CreateTransactionController {
             }
 
             if (params.amount <= 0) {
-                return badRequest({
-                    message: 'The amount must be greater than 0.',
-                });
+                return invalidAmountResponse();
             }
 
             const type = params.type.trim().toUpperCase();
-            const typeIsValid = ['EARNING', 'EXPENSE', 'INVESTIMENT'].includes(
-                type,
-            );
+            const typeIsValid = checkTypeIsValid(type);
             if (!typeIsValid) {
-                return badRequest({
-                    message:
-                        'The type must be EARNING, EXPENSE or INVESTIMENT.',
-                });
+                return invalidTypeResponse();
             }
 
             const transaction = await this.createTransactionUseCase.execute({
