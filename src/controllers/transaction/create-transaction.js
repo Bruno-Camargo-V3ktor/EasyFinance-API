@@ -3,6 +3,7 @@ import {
     checkIfIdIsValid,
     created,
     invalidIdResponse,
+    requiredFieldIsMissingResponse,
     serverError,
     validateRequiredFields,
 } from '../helpers/index.js';
@@ -29,9 +30,9 @@ export class CreateTransactionController {
                 requiredFields,
             );
             if (!requiredFieldsValidate.ok) {
-                return badRequest({
-                    message: `Missing param: ${requiredFieldsValidate.missingField}`,
-                });
+                return requiredFieldIsMissingResponse(
+                    requiredFieldsValidate.missingField,
+                );
             }
 
             const userIdIsValid = checkIfIdIsValid(params.user_id);
