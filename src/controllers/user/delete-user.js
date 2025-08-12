@@ -1,6 +1,6 @@
 import {
     checkIfIdIsValid,
-    invalidUserIdResponse,
+    invalidIdResponse,
     ok,
     serverError,
     userNotFound,
@@ -14,7 +14,7 @@ export class DeleteUserController {
     async execute(httpRequest) {
         const userId = httpRequest.params.userId;
         if (checkIfIdIsValid(userId)) {
-            return invalidUserIdResponse();
+            return invalidIdResponse();
         }
 
         try {

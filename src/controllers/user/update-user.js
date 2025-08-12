@@ -6,7 +6,7 @@ import {
     emailAlreadyInUseResponse,
     invalidEmailResponse,
     invalidPasswordResponse,
-    invalidUserIdResponse,
+    invalidIdResponse,
     badRequest,
     ok,
     serverError,
@@ -21,7 +21,7 @@ export class UpdateUserController {
         try {
             const userId = httpRequest.params.userId;
             if (!checkIfIdIsValid(userId)) {
-                return invalidUserIdResponse();
+                return invalidIdResponse();
             }
 
             const updateUserParams = httpRequest.body;

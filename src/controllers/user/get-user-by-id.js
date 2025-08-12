@@ -1,6 +1,6 @@
 import {
     checkIfIdIsValid,
-    invalidUserIdResponse,
+    invalidIdResponse,
     userNotFound,
     ok,
     serverError,
@@ -15,7 +15,7 @@ export class GetUserByIdController {
         try {
             const userId = httpRequest.params.userId;
             if (!checkIfIdIsValid(userId)) {
-                return invalidUserIdResponse();
+                return invalidIdResponse();
             }
 
             const user =

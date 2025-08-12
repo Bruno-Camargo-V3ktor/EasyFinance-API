@@ -5,10 +5,6 @@ export const userNotFound = () => {
     return notFound({ message: 'User not found' });
 };
 
-export const invalidUserIdResponse = () => {
-    return badRequest({ message: 'The provided id is not valid.' });
-};
-
 export const invalidPasswordResponse = () => {
     return badRequest({
         message: 'Password must be at least 6 characters',
@@ -33,8 +29,4 @@ export const checkIfPasswordIsValid = (password) => {
 
 export const checkIfEmailIsValid = (email) => {
     return validator.isEmail(email);
-};
-
-export const checkIfIdIsValid = (id) => {
-    return validator.isUUID(id);
 };
