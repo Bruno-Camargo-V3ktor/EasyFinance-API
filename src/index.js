@@ -26,6 +26,13 @@ app.post('/api/transactions', async (request, response) => {
     response.status(statusCode).json(body).send();
 });
 
+app.get('/api/transactions', async (request, response) => {
+    const getTransactionsByUserId = makeGetUserByIdController();
+
+    const { statusCode, body } = await getTransactionsByUserId.execute(request);
+    response.status(statusCode).json(body).send();
+});
+
 app.get('/api/users/:userId', async (request, response) => {
     const getUserByIdController = makeGetUserByIdController();
 
