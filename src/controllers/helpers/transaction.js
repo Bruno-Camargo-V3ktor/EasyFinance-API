@@ -1,4 +1,4 @@
-import { badRequest } from './http.js';
+import { badRequest, notFound } from './http.js';
 
 export const invalidAmountResponse = () => {
     return badRequest({
@@ -14,4 +14,8 @@ export const invalidTypeResponse = () => {
 
 export const checkTypeIsValid = (type) => {
     return ['EARNING', 'EXPENSE', 'INVESTIMENT'].includes(type);
+};
+
+export const transactionNotFound = () => {
+    return notFound({ message: 'Transaction not found' });
 };
