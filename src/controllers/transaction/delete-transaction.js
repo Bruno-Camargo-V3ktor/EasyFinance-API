@@ -5,7 +5,7 @@ import {
     serverError,
 } from '../helpers/index.js';
 
-export class deleteTransactionController {
+export class DeleteTransactionController {
     constructor(deleteTransactionUseCase) {
         this.deleteTransactionUseCase = deleteTransactionUseCase;
     }
