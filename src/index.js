@@ -6,6 +6,7 @@ import {
     makeUpdateUserController,
     makeGetUserByIdController,
     makeCreateTransactionController,
+    makeUpdateTransactionController,
 } from './factories/controllers/index.js';
 
 const app = express();
@@ -44,6 +45,14 @@ app.patch('/api/users/:userId', async (request, response) => {
     const updateUserController = makeUpdateUserController();
 
     const { statusCode, body } = await updateUserController.execute(request);
+    response.status(statusCode).json(body).send();
+});
+
+app.patch('/api/transactions/:transactionId', async (request, response) => {
+    const updateTransactionController = makeUpdateTransactionController();
+
+    const { statusCode, body } =
+        await updateTransactionController.execute(request);
     response.status(statusCode).json(body).send();
 });
 
