@@ -1,6 +1,6 @@
 import { PostgresHelper } from '../../../db/postgres/client.js';
 
-export class PostgresGetUserBalance {
+export class PostgresGetUserBalanceRepository {
     async execute(userId) {
         const result = await PostgresHelper.query(
             `
