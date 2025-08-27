@@ -1,17 +1,14 @@
 import { EmailAlreadyInUseError } from '../../errors/index.js';
+import { updateUserSchema } from '../../schemas/index.js';
 import {
-    checkIfEmailIsValid,
     checkIfIdIsValid,
-    checkIfPasswordIsValid,
     emailAlreadyInUseResponse,
-    invalidEmailResponse,
-    invalidPasswordResponse,
     invalidIdResponse,
     badRequest,
     ok,
     serverError,
 } from '../helpers/index.js';
-
+import { ZodError } from 'zod';
 export class UpdateUserController {
     constructor(updateUserUseCase) {
         this.updateUserUseCase = updateUserUseCase;
@@ -25,38 +22,8 @@ export class UpdateUserController {
             }
 
             const updateUserParams = httpRequest.body;
-            if (!updateUserParams) {
-                return badRequest({ message: 'The providade a body empty.' });
-            }
 
-            const allowedFields = [
-                'first_name',
-                'last_name',
-                'email',
-                'password',
-            ];
-
-            const someFieldIsNoAllowed = Object.keys(updateUserParams).some(
-                (field) => !allowedFields.includes(field),
-            );
-
-            if (someFieldIsNoAllowed) {
-                return badRequest({
-                    message: 'Some provided field is not allowed.',
-                });
-            }
-
-            if (updateUserParams.password) {
-                if (!checkIfPasswordIsValid(updateUserParams.password)) {
-                    return invalidPasswordResponse();
-                }
-            }
-
-            if (updateUserParams.email) {
-                if (!checkIfEmailIsValid(updateUserParams.email)) {
-                    return invalidEmailResponse();
-                }
-            }
+            await updateUserSchema.parseAsync(updateUserParams);
 
             const updateUser = await this.updateUserUseCase.execute(
                 userId,
@@ -65,6 +32,10 @@ export class UpdateUserController {
 
             return ok(updateUser);
         } catch (error) {
+            if (error instanceof ZodError) {
+                return badRequest({ message: error.errors[0].message });
+            }
+
             if (error instanceof EmailAlreadyInUseError) {
                 return emailAlreadyInUseResponse(error.message);
             }
