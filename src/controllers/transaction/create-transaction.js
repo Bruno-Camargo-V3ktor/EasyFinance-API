@@ -1,14 +1,6 @@
-import {
-    checkIfIdIsValid,
-    checkTypeIsValid,
-    created,
-    invalidAmountResponse,
-    invalidIdResponse,
-    invalidTypeResponse,
-    requiredFieldIsMissingResponse,
-    serverError,
-    validateRequiredFields,
-} from '../helpers/index.js';
+import { createTransactionSchema } from '../../schemas/index.js';
+import { badRequest, created, serverError } from '../helpers/index.js';
+import { ZodError } from 'zod';
 
 export class CreateTransactionController {
     constructor(createTransactionUseCase) {
@@ -19,39 +11,9 @@ export class CreateTransactionController {
         try {
             const params = httpRequest.body;
 
-            const requiredFields = [
-                'user_id',
-                'name',
-                'date',
-                'amount',
-                'type',
-            ];
-
-            const requiredFieldsValidate = validateRequiredFields(
-                params,
-                requiredFields,
-            );
-            if (!requiredFieldsValidate.ok) {
-                return requiredFieldIsMissingResponse(
-                    requiredFieldsValidate.missingField,
-                );
-            }
-
-            const userIdIsValid = checkIfIdIsValid(params.user_id);
-            if (!userIdIsValid) {
-                return invalidIdResponse();
-            }
-
-            if (params.amount <= 0) {
-                return invalidAmountResponse();
-            }
+            await createTransactionSchema.parseAsync(params);
 
             const type = params.type.trim().toUpperCase();
-            const typeIsValid = checkTypeIsValid(type);
-            if (!typeIsValid) {
-                return invalidTypeResponse();
-            }
-
             const transaction = await this.createTransactionUseCase.execute({
                 ...params,
                 type,
@@ -59,6 +21,12 @@ export class CreateTransactionController {
 
             return created(transaction);
         } catch (error) {
+            if (error instanceof ZodError) {
+                return badRequest({
+                    message: error.errors[0].message,
+                });
+            }
+
             console.error(error);
             return serverError();
         }
