@@ -5,9 +5,9 @@ services:
     image: postgres
     container_name: finance-app-postgres
     environment:
-      - POSTGRES_PASSWORD: password
-      - POSTGRES_USER: root
-      - POSTGRES_DB: finance-app
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: root
+      POSTGRES_DB: finance-app
     ports:
       - "5432:5432"
     volumes:
